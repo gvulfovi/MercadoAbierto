@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- item_product -->
+    <color name="colorBackgroundBottomText">#000000</color>
+    <color name="colorTextProductName">#feffff</color>
+    <color name="colorTextProductPrice">#40da15</color>
+
+    <!-- activity_details_product -->
+    <color name="colorBackgroundDescriptionBottomText">#8e8e8e</color>
+</resources>
