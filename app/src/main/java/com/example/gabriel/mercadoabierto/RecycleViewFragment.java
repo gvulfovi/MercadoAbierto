@@ -70,9 +70,8 @@ public class ListViewFragment extends Fragment {
 
         //Obtengo el 1er producto seleccionado de la lista para la primera vez
         Product product = mProductListAdapter.getItem(0);
-        //Se notifica al MainActivity cual será el producto seleccionado la primera vez.
-        //onItemSelectedListener.setSelectedProductItem(product);
 
+       /*
         //Al list View (acccion de click corto) le asigno un Listener (Clase Anonima)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -119,6 +118,7 @@ public class ListViewFragment extends Fragment {
                 return true;
             }
         });
+
 
         //Busqueda del boton que adiciona nuevos productos
         Button buttonAdd = (Button) mView.findViewById(R.id.button_add);
@@ -170,6 +170,7 @@ public class ListViewFragment extends Fragment {
             }
 
         });
+        */
 
         return mView;
     }
