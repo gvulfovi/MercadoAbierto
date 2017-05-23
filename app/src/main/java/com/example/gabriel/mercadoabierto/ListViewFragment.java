@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.example.gabriel.mercadoabierto.MainActivity.getSizeScreen;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -44,13 +46,14 @@ public class ListViewFragment extends Fragment {
         public void onItemSelected(Product product, Integer position);
         public void onItemDeleted(Product product);
         public void onItemAdded(Product product);
+        public void setSelectedProductItem(Product product);
     }
 
    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       mView = inflater.inflate(R.layout.fragment_list_view, container, false);
+        mView = inflater.inflate(R.layout.fragment_list_view, container, false);
 
         //Creacion de los datos en BD en Memoria
         ProductDAO productDAO = new ProductDAOInMemory();
@@ -59,7 +62,7 @@ public class ListViewFragment extends Fragment {
         //Obtengo los datos de la BD en Memoria
         mProductsList = productDAO.getListProducts();
 
-         // Creo el adapter y le envio los datos
+        // Creo el adapter y le envio los datos
         mProductListAdapter = new ProductListAdapter(this.getContext(), mProductsList);
 
         // Busco el List View
@@ -68,10 +71,22 @@ public class ListViewFragment extends Fragment {
         // Al list View le asigno un Adapter
         listView.setAdapter(mProductListAdapter);
 
-        //Obtengo el 1er producto seleccionado de la lista para la primera vez
-        Product product = mProductListAdapter.getItem(0);
-        //Se notifica al MainActivity cual será el producto seleccionado la primera vez.
-        //onItemSelectedListener.setSelectedProductItem(product);
+        String mDeviceResolution = getSizeScreen(this.getContext());
+        // Se considera Tablet si el screen sice es Large o XLarge
+        Boolean mIsTablet = (mDeviceResolution.equals("xlarge") || mDeviceResolution.equals("large"));
+
+        if (mIsTablet) {
+
+            //Obtengo el 1er producto seleccionado de la lista para la primera vez
+            Product product = mProductListAdapter.getItem(0);
+
+            //Se notifica al MainActivity cual será el producto seleccionado la primera vez.
+            onItemSelectedListener.setSelectedProductItem(product);
+
+            //Se invoca al MainActivity "simulando"  que celda del ListView contenido en el Fragment List View fue Clickeado.
+            onItemSelectedListener.onItemSelected(product, 0);
+        }
+
 
         //Al list View (acccion de click corto) le asigno un Listener (Clase Anonima)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

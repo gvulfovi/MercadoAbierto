@@ -15,8 +15,12 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
 
     private FragmentTransaction mTransaction;
     private String mDeviceResolution = "normal";
-    private Boolean mIsTablet = false;
+    private static Boolean mIsTablet = false;
     private Product mSelectedProductItem; // Item de Producto Selecionado de la listView
+
+    public Boolean getIsTablet() {
+        return mIsTablet;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
 
         //Creacion de los Fragments
         ListViewFragment listViewFragment = new ListViewFragment();
-        DetailProductFragment detailProductFragment = new DetailProductFragment();
+        //DetailProductFragment detailProductFragment = new DetailProductFragment();
 
         //Peticion del Fragment Manager
         FragmentManager unFragmentManager = getSupportFragmentManager();
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
             //Agregado al contenedor el fragment ListView a media pantalla
             mTransaction.add(R.id.containerFragmentListViewHalfScreen, listViewFragment);
             //Agregado al contenedor el fragment Detail Product si lo permite la pantalla.
-            mTransaction.add(R.id.containerFragmentDetailProduct, detailProductFragment);
+            //mTransaction.add(R.id.containerFragmentDetailProduct, detailProductFragment);
 
         } else { // Handset (Pantalla Completa para cada fragment)
 
@@ -78,24 +82,22 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
         //Peticion del Fragment Manager
         FragmentManager unFragmentManager = getSupportFragmentManager();
 
-        //Busco el detailProductFragment (Version vieja)
-        //DetailProductFragment detailProductFragment = (DetailProductFragment) unFragmentManager.findFragmentById(R.id.containerFragmentDetailProduct);
         //Se recrea nuevamente el detailProductFragment
         DetailProductFragment detailProductFragment = new DetailProductFragment();
+
+        // Creacion de un Bundle
+        Bundle unBundle = new Bundle();
+
+        // Creacion de Key en el Bundle
+        unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_NAME, product.getProductName());
+        unBundle.putDouble(DetailProductFragment.BUNDLE_KEY_PRODUCT_PRICE, product.getPrice());
+        unBundle.putInt(DetailProductFragment.BUNDLE_KEY_PRODUCT_IMAGE_ID, product.getImageId());
+        unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_ADVERTIZER, product.getAdvertizer());
+        unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_DESCRIPTION, product.getDescripcion());
 
         if (!mIsTablet) {
             // Si no es Tablet, estamos en presencia del formato handset, se inicia el DetailProductActivity (Activity B)
             // y se le pasa la information del item seleccionado por medio de un bundle.
-
-            // Creacion de un Bundle
-            Bundle unBundle = new Bundle();
-
-            // Creacion de Key en el Bundle
-            unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_NAME, product.getProductName());
-            unBundle.putDouble(DetailProductFragment.BUNDLE_KEY_PRODUCT_PRICE, product.getPrice());
-            unBundle.putInt(DetailProductFragment.BUNDLE_KEY_PRODUCT_IMAGE_ID, product.getImageId());
-            unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_ADVERTIZER, product.getAdvertizer());
-            unBundle.putString(DetailProductFragment.BUNDLE_KEY_PRODUCT_DESCRIPTION, product.getDescripcion());
 
             // Creacion del Intent
             Intent unIntent = new Intent(this, DetailProductActivity.class);
@@ -110,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
             // Si es una Tablet se Actualiza el product item a mostrar y se "actualiza" el fragment
 
             //Actualizo el Product Item a mostar.
-            this.setSelectedProductItem(product);
+            //this.setSelectedProductItem(product);
+
+            detailProductFragment.setArguments(unBundle);
 
             //Peticion de inicio de una transaccion
             FragmentTransaction unaTransaccion = unFragmentManager.beginTransaction();
@@ -118,18 +122,6 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
             //Reemplazo del fragment Detail Product.
             unaTransaccion.replace(R.id.containerFragmentDetailProduct, detailProductFragment);
 
-            /* Version vieja
-            if (detailProductFragment == null) {
-                //Creacion de los Fragments
-                detailProductFragment = new DetailProductFragment();
-                //Agregado al contenedor el fragment Detail Product si lo permite la pantalla.
-                unaTransaccion.add(R.id.containerFragmentDetailProduct, detailProductFragment);
-            } else {
-                // "Refresh del Fragment detailProductFragment"
-                unaTransaccion.detach(detailProductFragment);
-                unaTransaccion.attach(detailProductFragment);
-            }
-            */
             //Confirmar la transaccion.
             unaTransaccion.commit();
 
@@ -199,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements ListViewFragment.
 
     }
 
-    private static String getSizeScreen(Context context) {
+    public static String getSizeScreen(Context context) {
 
         int screenLayout = context.getResources().getConfiguration().screenLayout;
         screenLayout = screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
